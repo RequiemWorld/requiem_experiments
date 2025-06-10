@@ -46,13 +46,6 @@ def get_path_to_mxmlc_in_directory(directory: str) -> str | None:
 		return None
 
 
-def turn_actionscript_file_into_all_three_variants(mxmlc_path: str, swf_compress_path: str, base_output_name: str):
-	compile_command = [
-		mxmlc_path,
-		"-compress=False",
-	]
-
-
 class _CompressionAlgorithm(enum.Enum):
 	LZMA = "lzma"
 	ZLIB = "zlib"
