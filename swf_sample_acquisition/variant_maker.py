@@ -164,7 +164,6 @@ def _add_signature_string_to_swf_name(file_name: str, signature_string):
 	if "." not in file_name:
 		return file_name + "-" + signature_string
 	else:
-		breakpoint()
 		name_part, extension_part = file_name.rsplit(".", 1)
 		return name_part + "-" + signature_string + "." + extension_part
 
