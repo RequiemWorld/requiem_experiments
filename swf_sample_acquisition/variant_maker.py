@@ -76,6 +76,7 @@ class SWFVariantMaker:
 			self._actionscript_file_path,
 			"-output", swf_output_path,
 			"-compress=false",
+			"-debug=false",
 		]
 		# devnull is being redirected to (to silence the process output) instead of a new pipe because I'm pretty
 		# sure there are technically implications of giving a proper pipe to an application that won't be read from and can fill up.
