@@ -1,0 +1,3 @@
+# Premise
+
+Initial code for working out how to build a captive runtime for air. In summary: Signing is not optional, the ADT utility can generate a signing certificate for use. tsa has to be disabled in the signing options for this to avoid a timestamp error. It is possible and practical to go from actionscript file(s) to SWF, to SWF with application descriptor, to captive runtime. For experimentation sake, the application descriptor for SWFEncrypt that came with the SDK was used to experiment with. There will be a second version of this experiment that will be cleaner and lay this process out better.
