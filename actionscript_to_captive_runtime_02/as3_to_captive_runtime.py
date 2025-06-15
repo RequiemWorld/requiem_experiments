@@ -36,7 +36,7 @@ def main() -> None:
 		),
 		arguments.actionscript_root_path,
 	)
-	actionscript_to_runtime_helper.do_whole_shebang()
+	actionscript_to_runtime_helper.produce_captive_runtime()
 
 
 if __name__ == "__main__":

@@ -196,15 +196,18 @@ class SimplifiedBundlingOptions:
 		return self._application_window_title
 
 
-class ActionscriptToCaptiveRuntimeHelper:
+class SwfToCaptiveRuntimeHelper:
+	"""
+	A class for helping with the process of taking a SWF file, producing an application
+	descriptor for it, creating a throw away signing key, and producing a captive runtime for it.
+	"""
 	def __init__(self,
+				 source_swf_path: str,
 				 execution_helper: AirSDKExecutionHelper,
-				 bundling_options: SimplifiedBundlingOptions,
-				 actionscript_file_path: str):
+				 bundling_options: SimplifiedBundlingOptions):
+		self._source_swf_path = source_swf_path
 		self._execution_helper = execution_helper
 		self._bundling_options = bundling_options
-		self._actionscript_file_path = actionscript_file_path
-		self._compilation_helper = ActionscriptCompilationHelper(execution_helper)
 
 	def _run_bundle_command(self,
 							captive_runtime_output_directory: str,
@@ -224,17 +227,36 @@ class ActionscriptToCaptiveRuntimeHelper:
 		working_directory = os.path.dirname(application_descriptor_path)
 		self._execution_helper.execute_adt(command_arguments, cwd=working_directory)
 
-	def do_whole_shebang(self):
+	def produce_captive_runtime(self):
 		with tempfile.TemporaryDirectory() as temp_directory:
-			output_swf_path = os.path.join(temp_directory, "application.swf")
-			output_descriptor_path = os.path.join(temp_directory, "application.xml")
-			self._compilation_helper.compile_actionscript_to_swf(self._actionscript_file_path, output_swf_path)
+			swf_copy_path = os.path.join(temp_directory, "application.swf")
+			descriptor_output_path = os.path.join(temp_directory, "application.xml")
+			shutil.copy(self._source_swf_path, swf_copy_path)
 			descriptor_builder = ApplicationDescriptorBuilder()
 			descriptor_builder.with_window_title(self._bundling_options.application_window_title)
 			descriptor_builder.with_version_number(self._bundling_options.application_version_number)
 			descriptor_builder.with_content("application.swf")
 			descriptor_builder.with_file_name_without_extension(self._bundling_options.executable_name_in_directory)
-			descriptor_builder.build(output_descriptor_path)
-			self._run_bundle_command(self._bundling_options.output_captive_runtime_root, output_descriptor_path, "application.swf")
-			assert os.path.exists(self._bundling_options.output_captive_runtime_root)
-			assert os.path.isdir(self._bundling_options.output_captive_runtime_root)
+			descriptor_builder.build(descriptor_output_path)
+			self._run_bundle_command(self._bundling_options.output_captive_runtime_root, descriptor_output_path, "application.swf")
+
+
+class ActionscriptToCaptiveRuntimeHelper:
+	def __init__(self,
+				 execution_helper: AirSDKExecutionHelper,
+				 bundling_options: SimplifiedBundlingOptions,
+				 actionscript_file_path: str):
+		self._execution_helper = execution_helper
+		self._bundling_options = bundling_options
+		self._actionscript_file_path = actionscript_file_path
+		self._compilation_helper = ActionscriptCompilationHelper(execution_helper)
+
+	def produce_captive_runtime(self):
+		with tempfile.TemporaryDirectory() as temp_directory:
+			compiled_swf_path = os.path.join(temp_directory, "application.swf")
+			self._compilation_helper.compile_actionscript_to_swf(self._actionscript_file_path, compiled_swf_path)
+			swf_to_captive_runtime_helper = SwfToCaptiveRuntimeHelper(
+				source_swf_path=compiled_swf_path,
+				execution_helper=self._execution_helper,
+				bundling_options=self._bundling_options)
+			swf_to_captive_runtime_helper.produce_captive_runtime()
