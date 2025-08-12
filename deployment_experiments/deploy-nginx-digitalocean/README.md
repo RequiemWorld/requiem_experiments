@@ -2,6 +2,16 @@
 
 Automate the deployment of a server on digitalocean with nginx enabled and running natively, providing the IP address and port it is available on. No cleanup intended.
 
+## Discovery - 1 (service starting in cloud-init config may hang forever)
+- When using cloud-init to install a package containing a systemd service (nginx), starting it as part of the ``runcmd`` section presumably hangs forever. This article was followed and attempting the solution, ``daemon-reload``, and ``start --no-block nginx`` ~~resulted in nginx being started after some time~~. [\[1\]](https://ibb.co/XrszWggx) [\[2\]](https://ibb.co/WvskSDPp) 
+  - NGINX wasn't just started after some time, it was started fairly quickly, loading before it was up, and then reloading just wasn't working at the time of writing due to an issue with firefox mentioned in discovery 2.
+
+## Discovery - 2 (firefox silently switching to https:// after http connection fails and still doing so on reload)
+- Problem: Pasting the server IP Address into firefox resulted in it seemingly trying to use HTTPS for it. 
+  - Speculated Cause: A glance at stuff looked up for the issue suggested that it was due to a list of domains that the browser is aware of ahead of time to use HTTPS for from it having certain stuff in the past. (HSTS). This was not the cause because HSTS preload stuff does not apply to IP addresses. [\[1\]](https://support.mozilla.org/en-US/questions/1413426)
+  - Identified Cause: An AI-assisted lookup of the issue revealed that firefox will try again with HTTPS if the HTTP one can't be connected to .**Simply put**: In firefox, trying to connect to an HTTP server before it is available, and then again when it is, will result in it silently trying HTTPS and continuing to use https on reloads. [\[1\]](https://ibb.co/BHRP2bGm) [\[2\]](https://ibb.co/Zp7FqRPt)
+  - Identified Solution: Firefox will silently attempt to use HTTPS for the URL when the connection for HTTP doesn't go through, resulting in later refreshes still trying for HTTPS which won't be available. This can be fixed by setting ``browser.fixup.fallback-to-https`` to ``false`` in ``about:config``. [\[1\]](https://ibb.co/WpDtYJRs) [\[2\]](https://ibb.co/xtJPW4Cf)
+
 ## Developer Experience Issues
 
 - The methods on the ``droplets`` attribute of pydo.Client instances do not show up in pycharm.
