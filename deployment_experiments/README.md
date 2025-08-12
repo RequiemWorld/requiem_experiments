@@ -12,6 +12,6 @@ We need to find a way to go from no servers deployed to operational servers thro
 - At the press of a button, take a piece of software, have it pass through the acceptance tests in a production like environment, release it into production.
   - This should be able to be done for exploratory testing or done to different environments manually (I think Dave Farley mentioned this somewhere).
 - Deploy a piece of software, or a script to production, have it produce a result, get the result off of the machine, and have it auto destruct after some time.
-  - We should be able to rest easy knowing that if our scripts create a bunch of server instances by mistake, that they get deleted after some time.
-  - We should be able to deploy servers, make them do something, and get a result, even if the process is error-prone to start with.
-  - We should be able to deploy the software to a test server and deploy our load tests to another and get a report off of the load testing one.
+  - Rest easy knowing that if our scripts create a bunch of server instances by mistake, that they get deleted after some time.
+  - Deploy servers, make them do something, and get a result, even if the process is error-prone to start with.
+  - Deploy the software to a test server and deploy our load tests to another and get a report off of the load testing one.
