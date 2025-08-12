@@ -24,5 +24,4 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
     - An example of where AI went wrong 2: It tried to pass a dictionary in as **kwargs when told one was required by this api instead. 
 - The object representing a droplet as returned by ``droplets.create`` doesn't show up in pycharm, and it is just a dictionary.
   - It is counter-productive to have to be aware of everything needed in a returned dictionary and hampers exploratory testing.
-  - It is preferable to have what is available on the returned object explicitly defined and be able to hover for information in an IDE.
-  - Example of an issue relating to AI generating code in exploring the problem: https://ibb.co/Kxj82zgf
+  - It is preferable to have what is available on the returned object explicitly defined and be able to hover for information in an IDE. Example of an issue relating to AI generating code in exploring the problem: https://ibb.co/Kxj82zgf
