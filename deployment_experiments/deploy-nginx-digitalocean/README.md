@@ -22,6 +22,17 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 - Identified Cause: I placed tabs in it for indentation, as it turns out YAML doesn't support tabs for indentation, only spaces. [\[1\]](https://stackoverflow.com/questions/19975954/a-yaml-file-cannot-contain-tabs-as-indentation)
 - Chosen Solution: Introduce a helper class for putting together a cloud config imperatively, have the method for converting to a string handle the formatting, removing the risk of errors introduced by formatting manually. [\[1\]](https://ibb.co/k6XdsK2R) [\[2\]](https://ibb.co/Kjhmz8Hn)
 
+## Discovery 5 (docker is picky about where arguments for things like run go)
+- Problem: When practicing running a docker image in preparation for automation, the command did not work due to the ``--name``` argument being in the wrong place.
+- Identified Cause: The named arguments for docker commands have to come after the first positional one, and before the final positional one, i.e. ``docker run --name <container_name>` and not `
+
+## Discovery 6 (docker bypasses firewall rules on Debian & Ubuntu due to direct manipulation of iptables)
+- Found in the documentation for installing on Ubuntu & Debian: https://docs.docker.com/engine/install/ubuntu/, https://docs.docker.com/engine/install/debian/
+- Other distributions might have better firewall integration: It doesn't mention the same firewall compatibility issues for CentOS and Fedora. [\[1\]](https://ibb.co/VpPKGgxL) [\[2\]](https://ibb.co/Dg84HDHw) [\[3\]](https://ibb.co/nsgZK6Z4) 
+
+## Discovery 7 (apt used/uses HTTP by default in some cases and requires separate packages for HTTPS support?)
+- Suggested by AI when queried for the reason why digitalocean has this in articles for installing docker, it suggested that it is because older versions didn't technically need it for security of installing packages due to GPG signing. (take with a grain of salt, I'm not looking into this further. [\[1\]](https://ibb.co/nsD0pJnN)) [\[2\]](https://ibb.co/PvBmH0zj)
+
 ## Developer Experience Issues
 
 - The methods on the ``droplets`` attribute of pydo.Client instances do not show up in pycharm.
