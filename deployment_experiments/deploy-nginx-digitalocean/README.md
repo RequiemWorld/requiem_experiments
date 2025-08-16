@@ -17,6 +17,11 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 - Identified Cause: Services added by packages on Ubuntu are started by default and also enabled [\[1\]](https://ibb.co/MygN4MM8) [\[2\]](https://serverfault.com/questions/861583/how-to-stop-nginx-from-being-automatically-started-on-install)
 - Realistic solution: As debian & ubuntu automatically start and enable some of the installed packages and sometimes add firewall rules, we should use a distribution that is more predictable about this where possible (e.g., Rocky or Fedora).
 
+## Discovery 4 (yaml doesn't support tabs, cloud-init will not work with them)
+- Problem: When experimenting and copying over the config and adjusting it multiple times resulted in it not working on the server.
+- Identified Cause: I placed tabs in it for indentation, as it turns out YAML doesn't support tabs for indentation, only spaces. [\[1\]](https://stackoverflow.com/questions/19975954/a-yaml-file-cannot-contain-tabs-as-indentation)
+- Chosen Solution: Introduce a helper class for putting together a cloud config imperatively, have the method for converting to a string handle the formatting, removing the risk of errors introduced by formatting manually. [\[1\]](https://ibb.co/k6XdsK2R) [\[2\]](https://ibb.co/Kjhmz8Hn)
+
 ## Developer Experience Issues
 
 - The methods on the ``droplets`` attribute of pydo.Client instances do not show up in pycharm.
