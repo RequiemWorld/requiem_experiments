@@ -12,6 +12,11 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
   - Identified Cause: An AI-assisted lookup of the issue revealed that firefox will try again with HTTPS if the HTTP one can't be connected to .**Simply put**: In firefox, trying to connect to an HTTP server before it is available, and then again when it is, will result in it silently trying HTTPS and continuing to use https on reloads. [\[1\]](https://ibb.co/BHRP2bGm) [\[2\]](https://ibb.co/Zp7FqRPt)
   - Identified Solution: Firefox will silently attempt to use HTTPS for the URL when the connection for HTTP doesn't go through, resulting in later refreshes still trying for HTTPS which won't be available. This can be fixed by setting ``browser.fixup.fallback-to-https`` to ``false`` in ``about:config``. [\[1\]](https://ibb.co/WpDtYJRs) [\[2\]](https://ibb.co/xtJPW4Cf)
 
+## Discovery - 3 (services (nginx) is started and enabled automatically after installation on debian/ubuntu)
+- Problem: All files were removed from ``/var/www/html/`` and Hello World was written to ``/var/www/html/index.html`` **after** installing nginx, and **before** starting and enabling it. When the server was connected to in the browser, the default nginx page was shown before the hello world one. 
+- Identified Cause: Services added by packages on Ubuntu are started by default and also enabled [\[1\]](https://ibb.co/MygN4MM8) [\[2\]](https://serverfault.com/questions/861583/how-to-stop-nginx-from-being-automatically-started-on-install)
+- Realistic solution: As debian & ubuntu automatically start and enable some of the installed packages and sometimes add firewall rules, we should use a distribution that is more predictable about this where possible (e.g., Rocky or Fedora).
+
 ## Developer Experience Issues
 
 - The methods on the ``droplets`` attribute of pydo.Client instances do not show up in pycharm.
