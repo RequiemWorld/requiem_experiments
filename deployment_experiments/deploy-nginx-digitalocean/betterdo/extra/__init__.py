@@ -1,6 +1,11 @@
 """
 Extra stuff provided here for now to make working with the cloud more convenient.
 """
+import time
+from .. import DropletStatus
+from .. import DropletGetResult
+from .. import DigitalOceanClient
+
 
 class CloudInitConfig:
 	def __init__(self):
@@ -32,3 +37,11 @@ class CloudInitConfig:
 		Add a command to be added to the 'runcmd:' section when config is converted to string of YAML.
 		"""
 		self._run_commands.append(command)
+
+
+def wait_for_droplet_to_come_online(client: DigitalOceanClient, droplet_id: int) -> DropletGetResult:
+	while True:
+		droplet_info = client.droplets.get_droplet(droplet_id)
+		if droplet_info.status == DropletStatus.ACTIVE:
+			return droplet_info
+		time.sleep(0.8)

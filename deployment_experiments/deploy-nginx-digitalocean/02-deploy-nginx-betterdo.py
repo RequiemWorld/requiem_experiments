@@ -8,14 +8,7 @@ from betterdo import DigitalOceanClient, DropletStatus
 from betterdo import DropletCreationRequest
 from betterdo import DropletGetResult
 from betterdo.extra import CloudInitConfig
-
-
-def wait_for_droplet_to_come_online(client: DigitalOceanClient, droplet_id: int) -> DropletGetResult:
-	while True:
-		droplet_info = client.droplets.get_droplet(droplet_id)
-		if droplet_info.status == DropletStatus.ACTIVE:
-			return droplet_info
-		time.sleep(0.8)
+from betterdo.extra import wait_for_droplet_to_come_online
 
 
 def main() -> None:
