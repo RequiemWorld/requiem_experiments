@@ -35,3 +35,7 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 - The object representing a droplet as returned by ``droplets.create`` doesn't show up in pycharm, and it is just a dictionary.
   - It is counter-productive to have to be aware of everything needed in a returned dictionary and hampers exploratory testing.
   - It is preferable to have what is available on the returned object explicitly defined and be able to hover for information in an IDE. Example of an issue relating to AI generating code in exploring the problem: https://ibb.co/Kxj82zgf
+- The usage of arguments for docker commands is annoying and should be less necessary to always remember
+  - Example 1: To use important arguments such as ``name`` as part of the run command for making/starting a new container, it has to be ``docker run --name <name> <image>`` and not ``docker run <image> --name <name>``
+  - The usage of various commands introduces the likelihood of human error in the positioning being missed or the arguments being used wrong. This is something that code can be used to tackle the complexity of with helper functions or classes.
+  - We're going to be scripting stuff up to employ whole servers and finding out after that something was off in writing when it could have been prevented. A more efficient way to work with stuff could be provided in many situations.
