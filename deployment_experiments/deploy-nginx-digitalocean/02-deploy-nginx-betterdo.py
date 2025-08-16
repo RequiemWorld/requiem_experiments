@@ -18,7 +18,7 @@ def main() -> None:
 	# so I've taken the liberty of adding a way to build a cloud-init config with code earlier on.
 	cloud_init_config = CloudInitConfig()
 	cloud_init_config.add_package("nginx")
-	cloud_init_config.add_run_command("systemctl daemon reload")
+	cloud_init_config.add_run_command("systemctl daemon-reload")
 	cloud_init_config.add_run_command("systemctl enable nginx")
 	cloud_init_config.add_run_command("systemctl start --no-block nginx")
 	creation_request = DropletCreationRequest(
