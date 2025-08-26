@@ -2,6 +2,7 @@
 Extra stuff provided here for now to make working with the cloud more convenient.
 """
 import time
+import socket
 from .. import DropletStatus
 from .. import DropletGetResult
 from .. import DigitalOceanClient
@@ -45,3 +46,17 @@ def wait_for_droplet_to_come_online(client: DigitalOceanClient, droplet_id: int)
 		if droplet_info.status == DropletStatus.ACTIVE:
 			return droplet_info
 		time.sleep(0.8)
+
+def wait_for_tcp4_connectivity(host: str, port: int, try_for_seconds: int) -> None:
+	time_started_waiting = time.time()
+	seconds_elapsed_trying = None
+	while seconds_elapsed_trying is None or seconds_elapsed_trying < try_for_seconds:
+		with socket.socket() as sock:
+			sock.settimeout(1)
+			try:
+				sock.connect((host, port))
+				return
+			except (TimeoutError, ConnectionRefusedError):
+				pass
+		seconds_elapsed_trying = time.time() - time_started_waiting
+	raise RuntimeError(f"unable to connect to {host}:{port} in {try_for_seconds} seconds.")
