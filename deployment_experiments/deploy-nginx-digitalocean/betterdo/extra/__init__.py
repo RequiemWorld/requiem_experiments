@@ -6,7 +6,9 @@ import socket
 from .. import DropletStatus
 from .. import DropletGetResult
 from .. import DigitalOceanClient
-
+from ._ssh import IdempotencyError
+from ._ssh import IdempotencyBrokenError
+from ._ssh import IdempotentSSHKey
 
 class CloudInitConfig:
 	def __init__(self):
