@@ -50,6 +50,10 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 - https://stackoverflow.com/questions/31625788/paramiko-ssh-die-hang-with-big-output
 - https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
 
+## Discovery 11 (ubuntu doesn't use /usr/share/nginx/index.html for nginx by default, it uses /var/www/html/index.nginx-debian.html)
+- Issue Encountered: After messing around in an exploratory session and overwriting the file automatically after some struggles in automation, changes didn't stick even though it worked. 
+- Solution: Add a index.html and or other static content to /var/www/html instead. index.html will override /var/www/html/index.nginx-debian.html
+
 ## Developer Experience Issues
 
 - The methods on the ``droplets`` attribute of pydo.Client instances do not show up in pycharm.
