@@ -42,6 +42,14 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 - Issue Encountered: The command written to echo to a file was not working as intended due to a formatting issue. **Problematic command**: ``bash -c 'echo 'hello world333' > /usr/share/nginx/html/index.html'`` **Unintended Output**: ``hello\n`` [[\1\]](https://ibb.co/d4qjmCTG)
 - Simple Solution: Use double quotes inside single quotes in bash. **Fixed Command**: ``bash -c 'echo "hello world333" > /usr/share/nginx/html/index.html'``
 
+## Discovery 10 (paramiko.SSHClient.exec_command will return before the command is completed)
+- Issue Encountered: Seemingly out of nowhere, updating packages and installing nginx did not work anymore, reading from their stdout or waiting for them to exit fixed the issue.
+- Caveat/Note: It may work without waiting on it, but can lead to intermittency. Better not to mess around with it.
+- Solution 1: Wait for the remote process to exit via the ``recv_exit_status`` method. Caveat: If there is too much data in the buffer then it may not work.
+- Solution 2: Write a simple fit-for-purpose wrapper for the client that will handle this automatically and drain the buffer.
+- https://stackoverflow.com/questions/31625788/paramiko-ssh-die-hang-with-big-output
+- https://stackoverflow.com/questions/28485647/wait-until-task-is-completed-on-remote-machine-through-python
+
 ## Developer Experience Issues
 
 - The methods on the ``droplets`` attribute of pydo.Client instances do not show up in pycharm.
