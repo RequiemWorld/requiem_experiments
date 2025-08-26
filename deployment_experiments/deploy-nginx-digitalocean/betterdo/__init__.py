@@ -4,7 +4,8 @@ A better interface over digitalocean's pydo package. Created specifically for th
 import pydo
 import enum
 from enum import StrEnum
-
+from ._ssh import DigitalOceanSSHKeyManager
+from ._ssh import SSHKeyCreationInfo
 
 
 # It is possible that at runtime in the future, it can be verified that these
@@ -25,6 +26,13 @@ class DropletStatus(StrEnum):
 	NEW = "new"
 	ACTIVE = "active"
 
+class DropletSSHKeyEntry:
+	def __init__(self, id_or_fingerprint: int | str):
+		self._id_or_fingerprint = id_or_fingerprint
+
+	@property
+	def id_or_fingerprint(self):
+		return self._id_or_fingerprint
 
 class DropletCreationRequest:
 
@@ -33,19 +41,22 @@ class DropletCreationRequest:
 				 region: RegionSlug | str,
 				 size: SizeSlug | str,
 				 image: ImageSlug | str,
-				 user_data: str | None = None):
+				 user_data: str | None = None,
+				 ssh_keys: list[int | str] = None):
 		"""
 		:param name: The name to give to the droplet (may also be the hostname)
 		:param region: The region that the droplet should be hosted in (e.g., NYC1)
 		:param size: The size of the droplet in the digital ocean the machine will be (e.g., s-2vcpu-4gb-amd).
 		:param image: The operating system image to use for the droplet (e.g., ubuntu-24-04-x64)
 		:param user_data: The script or cloud-init config to use to initialize the server with.
+		:param ssh_keys: A list of identifiers or fingerprints for the public keys to install for the root user of the machine.
 		"""
 		self._name = name
 		self._region = region
 		self._size = size
 		self._image = image
 		self._user_data = user_data
+		self._ssh_keys = ssh_keys.copy() if ssh_keys is not None else []
 
 	def to_dictionary_for_api(self) -> dict:
 		request_dictionary = {
@@ -53,7 +64,8 @@ class DropletCreationRequest:
 			"region": self._region,
 			"size": self._size,
 			"image": self._image,
-			"user_data": self._user_data}
+			"user_data": self._user_data,
+			"ssh_keys": self._ssh_keys.copy()}
 		return request_dictionary
 
 	@property
@@ -183,9 +195,12 @@ class DigitalOceanClient:
 	def __init__(self, pydo_client: pydo.Client):
 		self._pydo_client = pydo_client
 		self._droplet_manager = DigitalOceanDropletManager(pydo_client)
+		self._ssh_key_manager = DigitalOceanSSHKeyManager(pydo_client)
 
 	@property
 	def droplets(self) -> DigitalOceanDropletManager:
 		return self._droplet_manager
 
-
+	@property
+	def ssh_keys(self) -> DigitalOceanSSHKeyManager:
+		return self._ssh_key_manager
