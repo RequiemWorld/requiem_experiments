@@ -38,9 +38,9 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 - Possible Solution #1 (use docker): A docker image would presumably be more predictable to setup/configure, avoiding intermittency issues.
 - Possible Solution #2 (poll directory until the file has been created): It might be necessary to check and wait for the file to be created.
 
-## Discovery 9 (single quotes inside single quotes that are inside double quotes must be escaped)
+## Discovery 9 (single quotes can't be inside single quotes, and escaping them like double quotes won't do any good.)
 - Issue Encountered: The command written to echo to a file was not working as intended due to a formatting issue. **Problematic command**: ``bash -c 'echo 'hello world333' > /usr/share/nginx/html/index.html'`` **Unintended Output**: ``hello\n`` [[\1\]](https://ibb.co/d4qjmCTG)
-- Solution: Escape the quotation marks.
+- Simple Solution: Use double quotes inside single quotes in bash. **Fixed Command**: ``bash -c 'echo "hello world333" > /usr/share/nginx/html/index.html'``
 
 ## Discovery 8 (impossible to overwrite /usr/share/nginx/index.html directly after installing with paramiko?)
 - Issue Encountered: After installing nginx over ssh with paramiko, it was impossible to overwrite /usr/share/nginx/index.html. It was possible but challenging to write to any other file in the directory after installation as well.
