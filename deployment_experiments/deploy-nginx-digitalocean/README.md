@@ -33,6 +33,13 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 ## Discovery 7 (apt used/uses HTTP by default in some cases and requires separate packages for HTTPS support?)
 - Suggested by AI when queried for the reason why digitalocean has this in articles for installing docker, it suggested that it is because older versions didn't technically need it for security of installing packages due to GPG signing. (take with a grain of salt, I'm not looking into this further. [\[1\]](https://ibb.co/nsD0pJnN)) [\[2\]](https://ibb.co/PvBmH0zj)
 
+## Discovery 8 (impossible to overwrite /usr/share/nginx/index.html directly after installing with paramiko?)
+- Issue Encountered: After installing nginx over ssh with paramiko, it was impossible to overwrite /usr/share/nginx/index.html. It was possible but challenging to write to any other file in the directory after installation as well.
+- Speculated Issue: Files other than index.html were able to be written in the directory after with paramiko with some intermittency. The issue is probably due to the directory not being created and files placed when the apt command finishes. Adding a 10-second sleep fixed the issue/intermittency for non index.html files.
+- Unresolved Issue: Overwriting index.html after installing nginx on Ubuntu with apt over ssh through Paramiko proved impossible. [\[1\]](https://ibb.co/XftcTxYn) [\[2\]](https://ibb.co/Jwj9wKxb)
+- Possible Solution #1 (use docker): As installing packages from the repositories and configuring them is proving to be a burden, installing them through docker and configuring them there may be a better option.
+- Possible Solution #2 (use another distro): Ubuntu and indirectly debian are proving themselves to be unreliable and burdensome for automation. Rocky Linux might be the better option.
+
 ## Developer Experience Issues
 
 - The methods on the ``droplets`` attribute of pydo.Client instances do not show up in pycharm.
