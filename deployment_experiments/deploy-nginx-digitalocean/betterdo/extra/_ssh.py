@@ -1,3 +1,4 @@
+import os
 from .. import DigitalOceanClient
 from .._ssh import SSHKeyInformation, SSHKeyCreationInfo
 
@@ -26,6 +27,17 @@ class IdempotentSSHKey:
 		assert public_key.startswith("ssh-rsa ")
 		self._name = name
 		self._public_key = public_key
+
+	@classmethod
+	def from_id_rsa_file_in_ssh_directory(cls, name: str, file_name: str) -> "IdempotentSSHKey":
+		"""
+		:param name: The name to give to the resource on the digital ocean account.
+		:param file_name: The file name in the ~/.ssh directory e.g., id_rsa.pub.
+		"""
+		ssh_key_path = os.path.expanduser(f"~/.ssh/{file_name}")
+		with open(ssh_key_path, "r") as f:
+			public_key_data = f.read()
+		return IdempotentSSHKey(name, public_key_data)
 
 	@staticmethod
 	def _find_key_with_matching_name(client: DigitalOceanClient, name: str) -> SSHKeyInformation | None:
