@@ -58,6 +58,8 @@ Automate the deployment of a server on digitalocean with nginx enabled and runni
 - Issue Encountered: It was impossible to update the packages on the system after running a command for installing other packages, it errored with ``E: Could not get lock /var/lib/apt/lists/lock. It is held by process 1730 (apt-get)`` and ``E: Unable to lock directory /var/lib/apt/lists/``. **Note:** It wasn't flaky during this, it failed 100% of the time and was impossible to continue without a solution. [\]1\]](https://ibb.co/WRYmHdk) [\[2\]](https://ibb.co/ZzBjf44G)
 - Solution: Add ``-o DPkg::Lock::Timeout=5`` to the beginning of the apt command to make it wait for the lock to be released or give up in the specified number of seconds. Adding it to the update command failing directly after the installation one solved the issue. This article illustrates a similar experience faced when doing stuff with cloud-init: https://blog.sinjakli.co.uk/2021/10/25/waiting-for-apt-locks-without-the-hacky-bash-scripts/ [\[1\]](https://ibb.co/PGvTD3wL)
 - Conclusion: The setup of the servers may be flaky (sometimes fails, sometimes succeeds) as shown in the referenced article if this option is not used, it should always be used for our purposes.
+- Update/Not Working: The option doesn't always fix the issue and is flaky. A possible source of the issue may be the packages being upgraded in the background as [unattended upgrades are enabled by default on the digitalocean droplets](https://ibb.co/Ps2nd1dM).
+ - This can be solved more reliably with a one-liner of: ``while sudo lsof /var/lib/dpkg/lock-frontend; do echo 'Waiting for apt to finish...'; sleep 5; done"`` 
 
 ## Developer Experience Issues
 
