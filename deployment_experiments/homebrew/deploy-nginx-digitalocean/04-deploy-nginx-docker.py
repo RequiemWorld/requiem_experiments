@@ -1,5 +1,6 @@
 import os
 import pydo
+import cloudflare
 from paramiko import RSAKey
 from betterdo import DigitalOceanClient, DropletCreationRequest, RegionSlug, SizeSlug, ImageSlug
 from betterdo.extra import DockerRunCommand, CloudInitConfig
@@ -16,6 +17,7 @@ def wait_for_apt_lock_availability(ssh_client: SimpleSSHClient) -> None:
 
 
 def install_docker_on_ubuntu_machine(ssh_client: SimpleSSHClient) -> None:
+	# this still seems flaky due to time of check to time of use issues
 	ssh_client.execute_command("apt-get -o DPkg::Lock::Timeout=50 update -y")
 	wait_for_apt_lock_availability(ssh_client)
 	ssh_client.execute_command("apt-get -o DPkg::Lock::Timeout=50 install  -y " + " ".join(["apt-transport-https", "ca-certificates", "curl", "software-properties-common"]))

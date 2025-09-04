@@ -7,7 +7,6 @@ from enum import StrEnum
 from ._ssh import DigitalOceanSSHKeyManager
 from ._ssh import SSHKeyCreationInfo
 
-
 # It is possible that at runtime in the future, it can be verified that these
 # are still valid and fail the script early if they're not, valid ones can be found at: https://slugs.do-api.dev/
 class ImageSlug(enum.StrEnum):
