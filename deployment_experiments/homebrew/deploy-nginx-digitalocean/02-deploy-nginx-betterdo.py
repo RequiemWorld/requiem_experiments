@@ -1,6 +1,7 @@
 import os
 import pydo
 import time
+import _import_helper
 from betterdo import SizeSlug
 from betterdo import RegionSlug
 from betterdo import ImageSlug

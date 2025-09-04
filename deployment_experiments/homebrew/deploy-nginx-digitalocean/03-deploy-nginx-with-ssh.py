@@ -2,6 +2,7 @@ import os
 import time
 import pydo
 import paramiko
+import _import_helper
 from betterdo import ImageSlug
 from betterdo import SizeSlug
 from betterdo import DropletCreationRequest, DigitalOceanClient
