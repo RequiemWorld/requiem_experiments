@@ -29,15 +29,23 @@ class IdempotentSSHKey:
 		self._public_key = public_key
 
 	@classmethod
+	def from_id_rsa_file_at_path(cls, name: str, ssh_key_path: str) -> "IdempotentSSHKey":
+		"""
+		:param name: The name to give to the resource on the digital ocean account.
+		:param ssh_key_path: The path to the file containing the public ssh key e.g., /home/user/.ssh/id_rsa.pub
+		"""
+		with open(ssh_key_path, "r") as f:
+			public_key_data = f.read()
+		return IdempotentSSHKey(name, public_key_data)
+
+	@classmethod
 	def from_id_rsa_file_in_ssh_directory(cls, name: str, file_name: str) -> "IdempotentSSHKey":
 		"""
 		:param name: The name to give to the resource on the digital ocean account.
 		:param file_name: The file name in the ~/.ssh directory e.g., id_rsa.pub.
 		"""
 		ssh_key_path = os.path.expanduser(f"~/.ssh/{file_name}")
-		with open(ssh_key_path, "r") as f:
-			public_key_data = f.read()
-		return IdempotentSSHKey(name, public_key_data)
+		return cls.from_id_rsa_file_at_path(name, ssh_key_path)
 
 	@staticmethod
 	def _find_key_with_matching_name(client: DigitalOceanClient, name: str) -> SSHKeyInformation | None:
