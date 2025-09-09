@@ -1,0 +1,16 @@
+- name: "Install NGINX"
+  hosts: all
+  become: true  # Become root through sudo or something
+  tasks:
+    - name: "update apt cache"
+      apt:
+        update_cache: true
+    - name: "Install nginx package"
+      apt:
+        name: nginx
+        state: present
+    - name: "Ensure nginx service is started & enabled"
+      systemd:
+        name: nginx
+        state: started
+        enabled: true
