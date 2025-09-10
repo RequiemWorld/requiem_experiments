@@ -1,4 +1,5 @@
 import os
+import sys
 import pydo
 import _import_helper
 from paramiko import RSAKey
@@ -18,7 +19,7 @@ def make_new_server_and_wait_for_ssh(client: DigitalOceanClient, public_ssh_key_
 	idempotent_ssh_key = IdempotentSSHKey.from_id_rsa_file_at_path("name", public_ssh_key_path)
 	ssh_key_info = idempotent_ssh_key.ensure_existence(client)
 	creation_request = DropletCreationRequest(
-		name="nginx",
+		name="some-server-for-playbook",
 		region=RegionSlug.NYC1,
 		size=SizeSlug.S_2VCPU_2GB_90GB_INTEL,
 		image=ImageSlug.UBUNTU_24_04_X64,
@@ -32,17 +33,23 @@ def make_new_server_and_wait_for_ssh(client: DigitalOceanClient, public_ssh_key_
 	return droplet_ip_address
 
 
-def setup_server_with_nginx_via_ansible_playbook(playbook_path: str, ip_address: str, private_key: RSAKey) -> None:
-	print(f"configuring server to have installed and started a native version of nginx")
+def setup_server_via_ansible_playbook(playbook_path: str, ip_address: str, private_key: RSAKey) -> None:
+	print(f"configuring server with the playbook at {playbook_path}")
 	playbook_executor = SimplePlaybookExecutor(ip_address, private_key)
 	playbook_executor.execute(playbook_path, as_user="root")
 
 
 def main() -> None:
+
+	playbook_file_path = sys.argv[1]
+	if not os.path.exists(playbook_file_path) and os.path.isfile(playbook_file_path):
+		print(f"path {playbook_file_path} either doesn't exist or isn't a file")
+		sys.exit(0)
+
 	client = DigitalOceanClient(pydo.Client(os.getenv("DIGITAL_OCEAN_TOKEN")))
 	ssh_private_key = RSAKey.from_private_key_file(os.path.expanduser("~/.ssh/id_rsa"))
 	server_ip_address = make_new_server_and_wait_for_ssh(client, os.path.expanduser("~/.ssh/id_rsa.pub"))
-	setup_server_with_nginx_via_ansible_playbook("00-static-playbook-nginx.yaml", server_ip_address, ssh_private_key)
+	setup_server_via_ansible_playbook(playbook_file_path, server_ip_address, ssh_private_key)
 	wait_for_tcp4_connectivity(server_ip_address, 80, 60)
 
 
