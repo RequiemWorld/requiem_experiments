@@ -1,0 +1,41 @@
+- name: "Install Docker & Start NGINX"
+  hosts: all
+  become: true
+  tasks:
+    - name: "update apt cache"
+      apt:
+        update_cache: true
+    - name: "install packages necessary for apt to use HTTPS, and to add repositories"
+      apt:
+        pkg:
+          # Based on and refined from:
+          # https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-20-04
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          # Certain ansible modules (apt_repository) require being able to install modules with pip
+          - python3-pip
+          - software-properties-common
+    - name: "add GPG key required for installing docker"
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: "add docker repository for Ubuntu 24_04"
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu/ noble stable
+        state: present
+    - name: "install docker community edition and update apt cache first"
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+    - name: "pull the latest nginx docker image"
+      community.docker.docker_image:
+        name: "nginx:latest"
+        source: pull
+    - name: "start a nginx container and publish to port 80 on the host"
+      community.docker.docker_container:
+        name: "arbitrary-container-name"
+        image: "nginx"
+        published_ports:
+          - 80:80  # container port : host port
