@@ -1,0 +1,9 @@
+  # NGINX will automatically start after because it's ubuntu or debian
+- name: "NGINX installation playbook"
+  hosts: all
+  tasks:
+    - name: "install nginx"
+      apt:
+        name: nginx
+        state: present
+        update_cache: true
