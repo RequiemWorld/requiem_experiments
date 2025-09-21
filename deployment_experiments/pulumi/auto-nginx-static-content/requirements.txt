@@ -1,0 +1,7 @@
+click==8.2.1
+pulumi==3.192.0
+pulumi_command==1.1.0
+pulumi_digitalocean==4.52.0
+pulumi_random==4.18.3
+pulumi-cloudflare==6.9.1
+pulumi_tls==5.2.2
