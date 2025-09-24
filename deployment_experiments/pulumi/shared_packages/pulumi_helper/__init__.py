@@ -1,5 +1,6 @@
 from typing import Mapping
 from ._intervention import drop_into_ssh
+from ._simplification import ExploratoryPulumiExecutor
 
 
 def check_that_no_resources_changed(resource_changes: Mapping[str, int]) -> bool:
