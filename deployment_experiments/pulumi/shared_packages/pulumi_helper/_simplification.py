@@ -41,4 +41,4 @@ class ExploratoryPulumiExecutor:
 			project_name=self._project_name,
 			program=program,
 			opts=self._workspace_options)
-		return stack.destroy()
+		return stack.destroy(on_error=ExploratoryPulumiExecutor._PRINT_STDERR, on_output=ExploratoryPulumiExecutor._PRINT_STDOUT)
