@@ -9,7 +9,7 @@ We need to find a way to go from no servers deployed to operational servers thro
 
 ## Abstract Objectives
 
-- At the press of a button, take a piece of software, have it pass through the acceptance tests in a production like environment, release it into production.
+- At the press of a button, take a piece of software, which has passed through the acceptance tests in a production like environment, release it into production.
   - This should be able to be done for exploratory testing or done to different environments manually (I think Dave Farley mentioned this somewhere).
 - Deploy a piece of software, or a script to production, have it produce a result, get the result off of the machine, and have it auto destruct after some time.
   - Rest easy knowing that if our scripts create a bunch of server instances by mistake, that they get deleted after some time.
