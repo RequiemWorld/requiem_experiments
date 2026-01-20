@@ -1,0 +1,4 @@
+httpx
+websockets
+git+https://github.com/RequiemWorld/discord_harness.git@ab96580c9db2052a751947870d1d95b44a6fa862
+git+https://github.com/scurry-works/scurrypy.git@15431dd1dbb0004a113a414494af6ce8940021fd
