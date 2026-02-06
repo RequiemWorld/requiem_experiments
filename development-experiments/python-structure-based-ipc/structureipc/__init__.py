@@ -1,8 +1,5 @@
 import abc
 from dataclasses import dataclass
-
-import pydantic
-
 from ._fields import Field
 from ._fields import FieldType
 from ._fields import LongField

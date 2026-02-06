@@ -1,5 +1,3 @@
-
-import pydantic
 import unittest
 from structureipc import Structure, LongField
 
