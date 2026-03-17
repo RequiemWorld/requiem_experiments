@@ -80,6 +80,7 @@ class BenchmarkHarnessCallableExecutor:
 		Executes a callable on specific CPU cores by spawning a new process
 		and pinning it to the provided CPU Cores.
 		"""
+		raise NotImplementedError
 		result_queue = multiprocessing.Queue()
 		def proxy_call_and_capture_result():
 			try:
