@@ -1,4 +1,5 @@
 import os
+import psutil
 import unittest
 import multiprocessing
 from speedtest import BenchmarkHarnessCallableExecutor
@@ -7,6 +8,9 @@ from speedtest import BenchmarkHarnessCallableExecutor
 class TestBenchmarkCallableExecutor(unittest.TestCase):
 	def setUp(self):
 		self._executor = BenchmarkHarnessCallableExecutor()
+
+	def _get_cpu_affinity(self) -> list[int]:
+		return psutil.Process(os.getpid()).cpu_affinity()
 
 	def test_should_execute_callable_in_different_process(self):
 		result_queue = multiprocessing.Queue()
@@ -26,12 +30,22 @@ class TestBenchmarkCallableExecutor(unittest.TestCase):
 		with self.assertRaises(Exception):
 			self._executor.execute_callable(target_callable, [])
 
-	# this is only going to work if the machine has at least two cores.
+	# this is only going to work if the machine has at least 2 cores.
 	def test_should_execute_callable_with_process_pinned_to_one_given_cpu_core(self):
-		self.skipTest("can be added if/when this experiment is continued")
-		def get_cpu_affinity() -> list[int]:
-			return psutil.Process(os.getpid()).cpu_affinity()
-
 		def target_callable():
-			return get_cpu_affinity()
-		self._executor.execute_callable()
+			return self._get_cpu_affinity()
+		result = self._executor.execute_callable(target_callable, [1])  # actually core 2
+		self.assertEqual([1], result)
+
+	# this is only going to work if the machine has at least 4 cores (public GitHub runners will suffice)
+	def test_should_execute_callable_with_process_pinned_to_multiple_given_cpu_cores(self):
+		def target_callable():
+			return self._get_cpu_affinity()
+		result = self._executor.execute_callable(target_callable, [1, 2])  # cores 2 and 3
+		self.assertEqual([1, 2], result)
+
+	def test_should_execute_callable_with_all_cores_available_when_none_specified(self):
+		def target_callable():
+			return self._get_cpu_affinity()
+		result = self._executor.execute_callable(target_callable, [])  # cores 2 and 3
+		self.assertEqual(self._get_cpu_affinity(), result)

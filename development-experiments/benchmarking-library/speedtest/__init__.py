@@ -1,5 +1,7 @@
-import multiprocessing
+import os
+import subprocess
 import typing
+import multiprocessing
 from typing import Callable
 from dataclasses import dataclass
 from hdrh.histogram import HdrHistogram
@@ -80,9 +82,15 @@ class BenchmarkHarnessCallableExecutor:
 		Executes a callable on specific CPU cores by spawning a new process
 		and pinning it to the provided CPU Cores.
 		"""
-		raise NotImplementedError
 		result_queue = multiprocessing.Queue()
 		def proxy_call_and_capture_result():
+			cpu_count = os.cpu_count()
+			if cpu_cores == []:
+				argument = ",".join(str(core_number) for core_number in range(cpu_count))
+			else:
+				argument = ",".join([str(cpu_core) for cpu_core in cpu_cores])
+			process_id = os.getpid()
+			subprocess.check_call(["taskset", "-pc", argument, str(process_id)])
 			try:
 				result = callable_()
 			except Exception as e:
