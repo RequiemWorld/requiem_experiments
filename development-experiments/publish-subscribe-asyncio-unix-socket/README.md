@@ -1,6 +1,6 @@
 # Purpose of Experiment
 
-The purpose of this experiment was to familiarize with using unix sockets, specifically in a publish/subscribe capacity. It doesn't get either for listening for information updates than reading from a socket file on the system. To work through this, the script design is to host a notification server over a unix socket which will publish the date to every client every second. The client script just has to connect and read it continuously.
+The purpose of this experiment was to familiarize with using unix sockets, specifically in a publish/subscribe capacity. It doesn't get easier for listening for information updates than reading from a socket file on the system. To work through this, the script design is to host a notification server over a unix socket which will publish the date to every client every second. The client script just has to connect and read it continuously.
 
 - The provided code should be self-explanatory. You pick a socket file location to publish dates to, and you pick that same location to read them from.
 - This exercise should showcase that when there is no meaningful complexity from application layer protocols then unix sockets are extremely easy to use.
